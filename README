@@ -1,6 +1,6 @@
 OTR Titanium Mobile Module for Android
 
-prerequisit - CMOSS checkout libotr branch from https://github.com/mnaamani/cmoss
+prerequisit - CMOSS checkout libotr branch from https://github.com/mnaamani/cmoss/tree/libotr
 
 modify CMOSS_BIN_DRIOD variable in jni/Android.mk to where you installed cmoss
 
@@ -14,9 +14,7 @@ To use the the module in your Titanium Mobile Application, import the project to
 Open both the module project and your application project. Build the module and specify the mobile application as the target.
 The module will be installed into your app's modules.
 
-For an example of how to use the otr module see the TEO project https://github.com/mnaamani/TEO/titanium/src/ti-libotr4.js
+For an example of how to use the otr module see the TEO project https://github.com/mnaamani/TEO/blob/master/titanium/src/ti-libotr4.js
 
 
-Code from from jni can be imported into a native android project. Look at the src/otr/OtrModule.java for example how to use it.
-
-
+Code from from jni can be imported into a native android project. Look at https://github.com/mnaamani/titanium_otr/blob/master/src/otr/OtrModule.java for example how to use it.
