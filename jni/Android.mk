@@ -4,19 +4,19 @@ CMOSS_BIN_DROID := /home/mokhtar/projects/cmoss/bin/droid
 include $(CLEAR_VARS)
 LOCAL_MODULE     := otr
 LOCAL_SRC_FILES  := libs/libotr.a
-LOCAL_C_INCLUDES := $(CRYPTO_LIB_PATH)/include
+LOCAL_C_INCLUDES := $(CMOSS_BIN_DROID)/include
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE     := gcrypt
 LOCAL_SRC_FILES  := libs/libgcrypt.a
-LOCAL_C_INCLUDES := $(CRYPTO_LIB_PATH)/include
+LOCAL_C_INCLUDES := $(CMOSS_BIN_DROID)/include
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE     := gpg-error
 LOCAL_SRC_FILES  := libs/libgpg-error.a
-LOCAL_C_INCLUDES := $(CRYPTO_LIB_PATH)/include
+LOCAL_C_INCLUDES := $(CMOSS_BIN_DROID)/include
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
