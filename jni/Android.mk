@@ -1,5 +1,5 @@
 LOCAL_PATH := $(call my-dir)
-CRYPTO_LIB_PATH := /home/mokhtar/projects/cmoss/bin/droid
+CMOSS_BIN_DROID := /home/mokhtar/projects/cmoss/bin/droid
 
 include $(CLEAR_VARS)
 LOCAL_MODULE     := otr
@@ -27,7 +27,7 @@ LOCAL_SRC_FILES := otrjni.c
 LOCAL_C_INCLUDES += ${NDK_ROOT}/platforms/android-14/arch-arm/usr/includes
 LOCAL_C_INCLUDES += ${NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/include 
 LOCAL_C_INCLUDES += ${NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/include 
-LOCAL_C_INCLUDES += $(CRYPTO_LIB_PATH)/include 
+LOCAL_C_INCLUDES += $(CMOSS_BIN_DROID)/include 
 
 LOCAL_CFLAGS += -DUNIX -DLOG_LEVEL_TRACE
 LOCAL_CPPFLAGS += -frtti -fexceptions
