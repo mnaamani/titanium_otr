@@ -373,6 +373,16 @@ Java_otr_OtrModule_CallOtrlMessageSymkey(JNIEnv* env, jobject this, jint usersta
     return otrl_message_symkey(userstate, ops, opdata,context,use,usedata,usedatalen,symkey);
 }
 
+JNIEXPORT jint JNICALL
+Java_otr_OtrModule_CallOtrlMessagePollGetDefaultInterval(JNIEnv* env, jobject this, jint userstate){
+    return otrl_message_poll_get_default_interval(userstate);
+}
+
+JNIEXPORT void JNICALL
+Java_otr_OtrModule_CallOtrlMessagePoll(JNIEnv* env, jobject this, jint userstate, jint ops, jint opdata){
+    otrl_message_poll(userstate, ops, opdata);
+}
+
 /*
 OtrlInsTag * otrl_instag_find(OtrlUserState us, const char *accountname,
     const char *protocol);

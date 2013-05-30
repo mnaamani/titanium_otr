@@ -193,6 +193,8 @@ public class OtrModule extends KrollModule
             int ops, int opdata, int context);
     @Kroll.method public native int CallOtrlMessageSymkey(int userstate,
             int ops, int opdata, int context, int use, int usedata, int usedatalen, int symkey);
+    @Kroll.method public native int  CallOtrlMessagePollGetDefaultInterval(int userstate);
+    @Kroll.method public native void CallOtrlMessagePoll(int userstate, int ops, int opdata);
     @Kroll.method public native int CallOtrlInstagFind(int userstate,
             String accountname, String protocol);
     @Kroll.method public native int CallOtrlInstagRead(int userstate,
