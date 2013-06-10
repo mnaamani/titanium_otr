@@ -491,51 +491,46 @@ Java_otr_OtrModule_CallJsapiPrivkeyGetProtocol(JNIEnv* env, jobject this, jint p
     return ((OtrlPrivKey*)p)->protocol;
 }
 
-static gcry_error_t jsapi_privkey_write_trusted_fingerprints_FILEp(OtrlUserState us, FILE *storef){
-    ConnContext *context;
-    Fingerprint *fprint;
-
-    if (!storef) return gcry_error(GPG_ERR_NO_ERROR);
-
-    for(context = us->context_root; context; context = context->next) {
-    /* Fingerprints are only stored in the master contexts */
-    if (context->their_instance != OTRL_INSTAG_MASTER) continue;
-
-    /* Don't bother with the first (fingerprintless) entry. */
-    for (fprint = context->fingerprint_root.next; fprint && fprint->trust;
-        fprint = fprint->next) {
-        int i;
-        fprintf(storef, "%s\t%s\t%s\t", context->username,
-            context->accountname, context->protocol);
-        for(i=0;i<20;++i) {
-        fprintf(storef, "%02x", fprint->fingerprint[i]);
-        }
-        fprintf(storef, "\t%s\n", fprint->trust ? fprint->trust : "");
-    }
-    }
-
-    return gcry_error(GPG_ERR_NO_ERROR);
-}
-
 JNIEXPORT jint JNICALL
 Java_otr_OtrModule_CallJsapiPrivkeyWriteTrustedFingerprints(JNIEnv* env, jobject this, jint userstate, jstring filename){
     OtrlUserState us = (OtrlUserState)userstate;
-    gcry_error_t err;
-    FILE *storef;
     JSTR_GET(filename, GPG_ERR_ENOMEM);
+    gcry_error_t error;
+    FILE *storef;
+    ConnContext *context;
+    Fingerprint *fingerprint;
 
-    storef = fopen(filename_str, "wb");
-    JSTR_RELEASE(filename);
+    error = gcry_error(GPG_ERR_NO_ERROR);
 
-    if (!storef) {
-    err = gcry_error_from_errno(errno);
-    return err;
+    for(context = us->context_root; context; context = context->next) {
+        /* Fingerprints are only stored in the master contexts */
+        if (context->their_instance != OTRL_INSTAG_MASTER) continue;
+
+        /* Don't bother with the first (fingerprintless) entry. */
+        for (fingerprint = context->fingerprint_root.next; fingerprint && fingerprint->trust[0]!='\0' ;
+            fingerprint = fingerprint->next) {
+            int i;
+            //only open the file if we have something to write
+            if(storef == NULL){
+                storef = fopen(filename_str, "wb");
+                
+                if(!storef) {
+                    JSTR_RELEASE(filename);
+                    error = gcry_error_from_errno(errno);
+                    return error;
+                }
+            }
+            fprintf(storef, "%s\t%s\t%s\t", context->username,
+                context->accountname, context->protocol);
+            for(i=0;i<20;++i) {
+                fprintf(storef, "%02x", fingerprint->fingerprint[i]);
+            }
+            fprintf(storef, "\t%s\n", fingerprint->trust ? fingerprint->trust : "");
+        }
     }
-
-    err = jsapi_privkey_write_trusted_fingerprints_FILEp(us, storef);
-
-    fclose(storef);
-    return err;
+  JSTR_RELEASE(filename);
+  if(storef != NULL) fclose(storef);
+  return error;
 }
 
 static gcry_error_t jsapi_sexp_write(FILE *privf, gcry_sexp_t sexp)
@@ -1216,18 +1211,6 @@ void msgops_callback_create_instag(void *opdata, const char *accountname,
     }
 }
 
-/* TODO
-void msgops_callback_convert_msg(void *opdata, ConnContext *context,
-        OtrlConvertType convert_type, char ** dest, const char *src){  
-}
-
-void msgops_callback_convert_free(void *opdata, ConnContext *context, char *dest){   
-}
-
-void msgops_callback_timer_control(void *opdata, unsigned int interval){
-}  */
-
-
 JNIEXPORT jint JNICALL
 Java_otr_OtrModule_CallJsapiMessageappopsNew(JNIEnv* env, jobject this){
     OtrlMessageAppOps *ops = malloc(sizeof(OtrlMessageAppOps));
@@ -1258,8 +1241,5 @@ Java_otr_OtrModule_CallJsapiMessageappopsNew(JNIEnv* env, jobject this){
     ops->convert_msg = NULL;
     ops->convert_free = NULL;
     ops->timer_control = NULL;
-    //ops->convert_msg = msgops_callback_convert_msg;
-    //ops->convert_free = msgops_callback_convert_free;
-    //ops->timer_control = msgops_callback_timer_control; // << important do this one
     return ops;
 }
